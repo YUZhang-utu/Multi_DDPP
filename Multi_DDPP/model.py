@@ -49,16 +49,16 @@ class dmpnn(nn.Module):
         self.dropout = nn.Dropout(dropout_rate)
 
 
-        self.edge_mlp_solute = nn.Sequential(
+        self.edge_mlp = nn.Sequential(
             nn.Linear(node_feat_dim + edge_feat_dim, edge_output_dim, bias=False),
             self.activation
         )
 
-        self.edge_update_mlp_solute = nn.Sequential(
+        self.edge_update_mlp = nn.Sequential(
             nn.Linear(edge_output_dim, edge_output_dim, bias=False)
         )
 
-        self.node_mlp_solute = nn.Sequential(
+        self.node_mlp = nn.Sequential(
             nn.Linear(node_feat_dim + edge_output_dim, node_output_dim, bias=True),
             self.activation,
             self.dropout
@@ -73,7 +73,6 @@ class dmpnn(nn.Module):
         self.final_output_layer = nn.Linear(1, 1)  
 
     def forward(self, batched_graph, extra_features):
-        # 初始化边特征
         batched_graph.edata['h0'] = self.initialize_edge_features1(batched_graph)
         batched_graph.edata['h'] = batched_graph.edata['h0']
         self.setup_reverse_edges(batched_graph)
@@ -85,11 +84,11 @@ class dmpnn(nn.Module):
 
         batched_graph.update_all(self.message_func_sum, self.reduce_func_sum)
         new_node_feats1 = torch.cat([batched_graph.ndata['feat'], batched_graph.ndata['m']], dim=1)
-        batched_graph.ndata['h'] = self.node_mlp_solute(new_node_feats1)
+        batched_graph.ndata['h'] = self.node_mlp(new_node_feats1)
 
 
-        solute_features = dgl.readout_nodes(batched_graph, 'h', op='sum')
-        combined_features = torch.cat([solute_features, extra_features], dim=-1)
+        features = dgl.readout_nodes(batched_graph, 'h', op='sum')
+        combined_features = torch.cat([features, extra_features], dim=-1)
 
 
         combined_features = combined_features.view(combined_features.size(0), -1)
@@ -103,7 +102,7 @@ class dmpnn(nn.Module):
 
     def initialize_edge_features1(self, g):
         edge_features = torch.cat([g.ndata['feat'][g.edges()[0]], g.edata['feat']], dim=1)
-        return self.edge_mlp_solute(edge_features)
+        return self.edge_mlp(edge_features)
 
     def setup_reverse_edges(self, g):
         src, dst = g.edges()
@@ -123,7 +122,7 @@ class dmpnn(nn.Module):
         edges.data['sum'] = edges.src['sum0']
         edges.data['m'] = edges.data['sum'] - edges.data['h'][edges.data['reverse_edge']]
 
-        weighted_m = self.edge_update_mlp_solute(edges.data['m'])
+        weighted_m = self.edge_update_mlp(edges.data['m'])
         edges.data['h'] = self.activation(weighted_m + edges.data['h0'])
         edges.data['h'] = self.dropout(edges.data['h'])
         return {'h': edges.data['h']}
