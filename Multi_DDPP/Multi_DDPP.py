@@ -39,19 +39,19 @@ class LitGraphModel(pl.LightningModule):
         self.val_precision = Precision(task='binary')
         self.val_recall = Recall(task='binary')
 
-    def forward(self, batched_solute_graph, extra_features):
-        return self.model(batched_solute_graph, extra_features)
+    def forward(self, batched_graph, extra_features):
+        return self.model(batched_graph, extra_features)
 
     def training_step(self, batch, batch_idx):
-        batched_solute_graph, targets, extra_features = batch
+        batched_graph, targets, extra_features = batch
 
 
         with torch.no_grad():
-            teacher_predictions = self.teacher_model(batched_solute_graph, extra_features)
+            teacher_predictions = self.teacher_model(batched_graph, extra_features)
             teacher_predictions = torch.sigmoid(teacher_predictions).detach()
 
 
-        predictions = self(batched_solute_graph, extra_features)
+        predictions = self(batched_graph, extra_features)
 
 
         loss = F.binary_cross_entropy_with_logits(predictions.view(-1), targets.float())
@@ -73,8 +73,8 @@ class LitGraphModel(pl.LightningModule):
         return total_loss
 
     def validation_step(self, batch, batch_idx):
-        batched_solute_graph, targets, extra_features = batch
-        predictions = self(batched_solute_graph, extra_features)
+        batched_graph, targets, extra_features = batch
+        predictions = self(batched_graph, extra_features)
         predictions = predictions.view(-1)
         loss = F.binary_cross_entropy_with_logits(predictions, targets.float())
 
