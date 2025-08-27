@@ -31,7 +31,6 @@ class LitGraphModel(pl.LightningModule):
         self.val_df = val_df
         self.lambda_ = lambda_
 
-        # Initialize metrics
         self.train_accuracy = Accuracy(task='binary')
         self.val_accuracy = Accuracy(task='binary')
         self.val_auc = AUROC(task='binary')
@@ -166,9 +165,9 @@ def main_student():
     student_module = LitGraphModel(student_model, teacher_model, train_df, val_df, learning_rate=0.0001)
 
 
-    logger = TensorBoardLogger(os.path.join(output_dir, 'student_logs'), name='logs_student')
+    logger = TensorBoardLogger(os.path.join(output_dir, ''), name='')
     checkpoint_callback = ModelCheckpoint(
-        dirpath=os.path.join(output_dir, 'student_model'),
+        dirpath=os.path.join(output_dir, ''),
         monitor='val_loss',
         mode='min',
         save_top_k=1
