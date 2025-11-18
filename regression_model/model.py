@@ -4,6 +4,9 @@ import dgl
 
 
 class MultiHeadAttention(nn.Module):
+    """
+    Multi_head attention module
+    """
     def __init__(self, embed_size, heads):
         super(MultiHeadAttention, self).__init__()
         self.heads = heads
@@ -38,6 +41,9 @@ class MultiHeadAttention(nn.Module):
 
 
 class Moe(nn.Module):
+    """
+    MOE for extra descriptors and graph
+    """
     def __init__(self, in_feature, num_experts, dropout_rate, hid_dim):
         super(Moe, self).__init__()
         self.activation = nn.LeakyReLU()
