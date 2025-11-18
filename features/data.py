@@ -1,4 +1,3 @@
-from typing import List
 from rdkit import Chem
 import torch
 import dgl
