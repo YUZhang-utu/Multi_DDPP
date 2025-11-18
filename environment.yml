@@ -1,0 +1,20 @@
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.8
+  - pytorch=2.3.0
+  - pytorch-cuda=12.1
+  - pytorch-lightning=2.3.0
+  - torchmetrics=1.2.0
+  - numpy=1.26.4
+  - tensorboard=2.14.0
+  - scikit-learn=1.3.2
+  - rdkit=2021.09.2
+  - pandas=2.3.0
+  - pip
+  - pip:
+      - dgl=2.2.1
+      - torch-geometric=2.3.1 
+      - Mordred=1.2.0
