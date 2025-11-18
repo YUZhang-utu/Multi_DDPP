@@ -179,9 +179,9 @@ def main():
 
     set_seed(args.seed)
 
-    print(f'Loading data from: {args.small_data_path}')
+
     student_df = pd.read_csv(args.small_data_path)
-    print(f'Loaded {len(student_df)} samples with {len(student_df["SMILES"].unique())} unique molecules')
+
 
     # Setup output directory
     os.makedirs(args.output_dir, exist_ok=True)
@@ -196,7 +196,6 @@ def main():
     print(f'\nTeacher model path: {teacher_model_path}')
 
     if os.path.exists(teacher_model_path):
-        print('Loading teacher model...')
         teacher_model = dmpnn(
             node_feat_dim=args.node_feat_dim,
             edge_feat_dim=args.edge_feat_dim,
@@ -211,14 +210,11 @@ def main():
 
         try:
             teacher_model.load_state_dict(torch.load(teacher_model_path), strict=False)
-            print('✓ Teacher model loaded successfully!')
         except Exception as e:
-            print(f'✗ Error loading teacher model: {e}')
-            print('Training without knowledge distillation...')
+            print(f'Error loading teacher model: {e}')
             teacher_model = None
     else:
-        print(f'✗ Teacher model not found at {teacher_model_path}')
-        print('Training without knowledge distillation...')
+        print(f'Teacher model not found at {teacher_model_path}')
         teacher_model = None
 
     # Cross-validation setup
@@ -242,8 +238,6 @@ def main():
         train_df = student_df.iloc[train_indices]
         val_df = student_df.iloc[val_indices]
         
-        print(f'Train set: {len(train_df)} samples ({len(train_smiles)} unique molecules)')
-        print(f'Val set:   {len(val_df)} samples ({len(val_smiles)} unique molecules)')
 
         # Setup fold directory and save data splits
         fold_dir = os.path.join(args.output_dir, f'fold{fold}')
@@ -303,11 +297,9 @@ def main():
             enable_progress_bar=True
         )
 
-        print(f'\nStarting training for fold {fold}...')
         trainer.fit(student_module)
         
-        print(f'\n✓ Fold {fold} completed!')
-        print(f'Best model saved to: {checkpoint_callback.best_model_path}')
+
 
     print(f'\n{"="*70}')
     print(f'All {args.num_folds} folds completed successfully!')
