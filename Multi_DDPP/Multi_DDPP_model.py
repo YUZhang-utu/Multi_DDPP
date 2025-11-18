@@ -158,13 +158,13 @@ def parse_args():
     
     # Knowledge distillation parameters
     parser.add_argument('--lambda_kd', type=float, default=0.2)
-    parser.add_argument('--temperature', type=float, default=5.0)
+    parser.add_argument('--temperature', type=float, default=6.0)
     parser.add_argument('--teacher_dropout', type=float, default=0.2)
-    parser.add_argument('--student_dropout', type=float, default=0.2')
+    parser.add_argument('--student_dropout', type=float, default=0.0')
     
     # Cross-validation parameters
     parser.add_argument('--num_folds', type=int, default=10)
-    parser.add_argument('--cv_random_state', type=int, default=0)
+    parser.add_argument('--cv_random_state', type=int, default=2)
     
     
     parser.add_argument('--seed', type=int, default=1)
