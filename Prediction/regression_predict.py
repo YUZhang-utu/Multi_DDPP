@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from sklearn.preprocessing import StandardScaler
 import pytorch_lightning as pl
 from regression_model.model import dmpnn
-from data.date_pre import MoleculeDataset, collate_fn
+from features.date_pre import MoleculeDataset, collate_fn
 from pytorch_lightning import Trainer, LightningModule
 
 class InferenceModule(LightningModule):
