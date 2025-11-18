@@ -21,6 +21,9 @@ def set_seed(seed: int = 42):
     torch.backends.cudnn.benchmark = False
 
 def split_and_standardize(df, train_indices, val_indices):
+    """
+    data split
+    """
     train_df = df.iloc[train_indices]
     val_df = df.iloc[val_indices]
 
@@ -100,11 +103,11 @@ def main():
     kf = KFold(n_splits=num_splits, shuffle=True, random_state=0)
 
     fold = 0
-    for train_index, val_index in kf.split(df['SMILES1'].unique()):
+    for train_index, val_index in kf.split(df['SMILES'].unique()):
         fold += 1
-        train_smiles, val_smiles = df['SMILES1'].unique()[train_index], df['SMILES1'].unique()[val_index]
-        train_indices = df[df['SMILES1'].isin(train_smiles)].index
-        val_indices = df[df['SMILES1'].isin(val_smiles)].index
+        train_smiles, val_smiles = df['SMILES'].unique()[train_index], df['SMILES'].unique()[val_index]
+        train_indices = df[df['SMILES'].isin(train_smiles)].index
+        val_indices = df[df['SMILES'].isin(val_smiles)].index
 
         train_df, val_df = split_and_standardize(df, train_indices, val_indices)
 
@@ -113,16 +116,19 @@ def main():
 
         train_df.to_csv(os.path.join(fold_dir, 'train.csv'), index=False)
         val_df.to_csv(os.path.join(fold_dir, 'val.csv'), index=False)
-        model = dmpnn(node_feat_dim=,
-                      edge_feat_dim=,
-                      edge_output_dim=,
-                      node_output_dim=,
-                      extra_dim=,
-                      num_rounds=,
-                      dropout_rate=,
-                      num_experts=,
-                      moe_hid_dim = ,
-                      num_heads=
+        """
+        parameters of model
+        """
+        model = dmpnn(node_feat_dim=109,
+                      edge_feat_dim=13,
+                      edge_output_dim=400,
+                      node_output_dim=400,
+                      extra_dim=24,
+                      num_rounds=7,
+                      dropout_rate=0.2,
+                      num_experts=4,
+                      moe_hid_dim =400,
+                      num_heads=8
                       )
 
         logger = TensorBoardLogger(fold_dir, name='logs')
@@ -134,11 +140,11 @@ def main():
         )
         early_stopping_callback = EarlyStopping(
             monitor='val_loss',
-            patience=20,
+            patience=30,
             verbose=True
         )
         trainer = Trainer(
-            max_epochs=300,
+            max_epochs=500,
             logger=logger,
             callbacks=[checkpoint_callback, early_stopping_callback],
             accelerator='gpu',
