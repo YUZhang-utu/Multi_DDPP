@@ -73,15 +73,15 @@ class LitGraphModel(pl.LightningModule):
         if stage == 'fit' or stage is None:
             train_df = pd.read_csv(self.train_path)
             val_df = pd.read_csv(self.val_path)
-            self.train_dataset = MoleculeDataset(train_df['SMILES1'].tolist(),
+            self.train_dataset = MoleculeDataset(train_df['SMILES'].tolist(),
                                                  train_df['PAMPA'].values,
                                                  torch.tensor(train_df.iloc[:, 2:].values, dtype=torch.float32))
-            self.val_dataset = MoleculeDataset(val_df['SMILES1'].tolist(),
+            self.val_dataset = MoleculeDataset(val_df['SMILES'].tolist(),
                                                val_df['PAMPA'].values,
                                                torch.tensor(val_df.iloc[:, 2:].values, dtype=torch.float32))
         if stage == 'test' or stage is None:
             test_df = pd.read_csv(self.test_path)
-            self.test_dataset = MoleculeDataset(test_df['SMILES1'].tolist(),
+            self.test_dataset = MoleculeDataset(test_df['SMILES'].tolist(),
                                                 test_df['PAMPA'].values,
                                                 torch.tensor(test_df.iloc[:, 2:].values, dtype=torch.float32))
     def train_dataloader(self):
@@ -123,7 +123,7 @@ def main():
                       edge_feat_dim=13,
                       edge_output_dim=400,
                       node_output_dim=400,
-                      extra_dim=24,
+                      extra_dim=26,
                       num_rounds=7,
                       dropout_rate=0.2,
                       num_experts=4,
