@@ -18,3 +18,7 @@ In this work, we firstly trained a big dataset including differet cell assays bu
 * git clone https://github.com/YUZhang-utu/Macro_permeability<br>
 * cd Macro_permeability
 * conda env create -f environment.yml -n macro_p
+# Predict new molecules
+* Save data as same as files in Example
+* Classification: python Prediction/classification_predict.py --checkpoint_path classification_model.ckpt --input_csv new_data.csv
+* Regression: python Prediction/regression_predict.py --checkpoint_path regression_model.ckpt --input_csv new_data.csv
