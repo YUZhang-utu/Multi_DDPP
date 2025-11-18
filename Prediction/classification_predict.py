@@ -5,8 +5,8 @@ import argparse
 from pathlib import Path
 from torch.utils.data import DataLoader
 from pytorch_lightning import Trainer, LightningModule
-from data.date_pre import MoleculeDataset, collate_fn
-from Multi_DDPP.model.dmpnn_class1 import dmpnn
+from features.date_pre import MoleculeDataset, collate_fn
+from Multi_DDPP.model import dmpnn
 
 class InferenceModule(LightningModule):
     def __init__(self, model):
