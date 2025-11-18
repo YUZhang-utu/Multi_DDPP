@@ -35,7 +35,10 @@ PARAMS = Featurization_parameters()
 
 
 def atom_features(atom: Chem.rdchem.Atom) -> torch.Tensor:
-
+    """
+    Builds a feature vector for each atom.
+    return: A tensor containing the atom features.
+    """
     features = []
     if atom:
         features = [
@@ -129,7 +132,9 @@ def get_electronegativity(atom: Chem.rdchem.Atom) -> float:
         return 0
 
 def bond_features(bond: Chem.rdchem.Bond) -> torch.Tensor:
-
+    """
+    Builds a feature vector for each bond and returns as a torch.Tensor.
+    """
     bt = bond.GetBondType()
     fbond = [
         1.0 if bt == Chem.rdchem.BondType.SINGLE else 0.0,
@@ -147,6 +152,9 @@ def bond_features(bond: Chem.rdchem.Bond) -> torch.Tensor:
 
 
 def onek_encoding_unk(value: int, choices: List[int]) -> List[int]:
+    """
+    Creates a one-hot encoding with an extra category for uncommon values.
+    """
     encoding = [0] * (len(choices) + 1)
     index = choices.index(value) if value in choices else -1
     encoding[index] = 1
