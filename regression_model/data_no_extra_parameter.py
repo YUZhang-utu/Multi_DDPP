@@ -180,8 +180,8 @@ def smiles_to_graph(smiles):
     return g
 
 def smiles_to_graphs(_smiles):
-    solute_graph = smiles_to_graph(_smiles)
-    return solute_graph
+    graph = smiles_to_graph(_smiles)
+    return graph
 
 
 class MoleculeDataset(torch.utils.data.Dataset):
@@ -194,17 +194,17 @@ class MoleculeDataset(torch.utils.data.Dataset):
         target = self.targets[idx]
 
 
-        solute_graph = smiles_to_graphs(_smiles)
+        graph = smiles_to_graphs(_smiles)
 
-        return solute_graph, torch.tensor(target, dtype=torch.float32)
+        return graph, torch.tensor(target, dtype=torch.float32)
 
     def __len__(self):
         return len(self._smiles_list)
 
 
 def collate_fn(samples):
-    solute_graphs, targets = zip(*samples)
-    batched_graph = dgl.batch(solute_graphs)
+    graphs, targets = zip(*samples)
+    batched_graph = dgl.batch(graphs)
     targets = torch.stack(targets)
 
     return batched_graph, targets
