@@ -24,7 +24,7 @@ def set_seed(seed: int = 42):
 
 
 class LitGraphModel(pl.LightningModule):
-    def __init__(self, model, teacher_model, train_path, val_path, learning_rate, lambda_=0.5, temperature=4.0):
+    def __init__(self, model, teacher_model, train_path, val_path, learning_rate, lambda_=0.2, temperature=5.0):
         super().__init__()
         self.model = model
         self.teacher_model = teacher_model  # add teacher model
@@ -45,14 +45,14 @@ class LitGraphModel(pl.LightningModule):
         self.train_auc = AUROC(task='binary')
         self.train_mcc = MatthewsCorrCoef(task='binary', num_classes=2)
 
-    def forward(self, batched_solute_graph, extra_features):
-        return self.model(batched_solute_graph, extra_features)
+    def forward(self, batched_graph, extra_features):
+        return self.model(batched_graph, extra_features)
 
     def training_step(self, batch, batch_idx):
-        batched_solute_graph, targets, extra_features = batch
+        batched_graph, targets, extra_features = batch
 
         
-        student_logits = self(batched_solute_graph, extra_features).view(-1)
+        student_logits = self(batched_graph, extra_features).view(-1)
 
         # hard label loss
         hard_loss = F.binary_cross_entropy_with_logits(student_logits, targets.float())
@@ -60,7 +60,7 @@ class LitGraphModel(pl.LightningModule):
         # KD
         if self.teacher_model is not None:
             with torch.no_grad():
-                teacher_logits = self.teacher_model(batched_solute_graph, extra_features).view(-1)
+                teacher_logits = self.teacher_model(batched_graph, extra_features).view(-1)
             
             # smooth distribution of soft label
             # p(z, T) = σ(z/T)
@@ -94,8 +94,8 @@ class LitGraphModel(pl.LightningModule):
         return total_loss
 
     def validation_step(self, batch, batch_idx):
-        batched_solute_graph, targets, extra_features = batch
-        predictions = self(batched_solute_graph, extra_features)
+        batched_graph, targets, extra_features = batch
+        predictions = self(batched_graph, extra_features)
         predictions = predictions.view(-1)
         loss = F.binary_cross_entropy_with_logits(predictions, targets.float())
 
