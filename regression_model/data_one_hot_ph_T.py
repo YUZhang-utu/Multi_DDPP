@@ -179,8 +179,8 @@ def smiles_to_graph(smiles):
     return g
 
 def smiles_to_graphs(_smiles):
-    solute_graph = smiles_to_graph(_smiles)
-    return solute_graph
+    graph = smiles_to_graph(_smiles)
+    return graph
 
 class MoleculeDataset(torch.utils.data.Dataset):
     def __init__(self, _smiles_list, targets, ph_values=None, temp_values=None):
@@ -195,16 +195,16 @@ class MoleculeDataset(torch.utils.data.Dataset):
         target = self.targets[idx]
 
 
-        solute_graph = smiles_to_graphs(_smiles)
+        graph = smiles_to_graphs(_smiles)
         
 
         if self.has_global_features:
             ph = self.ph_values[idx]
             temp = self.temp_values[idx]
             global_features = torch.tensor([ph, temp], dtype=torch.float32)
-            return solute_graph, torch.tensor(target, dtype=torch.float32), global_features
+            return graph, torch.tensor(target, dtype=torch.float32), global_features
         else:
-            return solute_graph, torch.tensor(target, dtype=torch.float32)
+            return graph, torch.tensor(target, dtype=torch.float32)
 
     def __len__(self):
         return len(self._smiles_list)
@@ -223,7 +223,7 @@ class OneHotMoleculeDataset(torch.utils.data.Dataset):
         target = self.targets[idx]
 
 
-        solute_graph = smiles_to_graphs(_smiles)
+        graph = smiles_to_graphs(_smiles)
         
 
         if self.has_global_features:
@@ -231,9 +231,9 @@ class OneHotMoleculeDataset(torch.utils.data.Dataset):
                 torch.tensor(self.ph_onehot[idx], dtype=torch.float32),
                 torch.tensor(self.temp_onehot[idx], dtype=torch.float32)
             ])
-            return solute_graph, torch.tensor(target, dtype=torch.float32), global_features
+            return graph, torch.tensor(target, dtype=torch.float32), global_features
         else:
-            return solute_graph, torch.tensor(target, dtype=torch.float32)
+            return graph, torch.tensor(target, dtype=torch.float32)
 
     def __len__(self):
         return len(self._smiles_list)
@@ -243,14 +243,14 @@ def collate_fn(samples):
     has_global_features = len(samples[0]) > 2
     
     if has_global_features:
-        solute_graphs, targets, global_features = zip(*samples)
-        batched_graph = dgl.batch(solute_graphs)
+        graphs, targets, global_features = zip(*samples)
+        batched_graph = dgl.batch(graphs)
         targets = torch.stack(targets)
         global_features = torch.stack(global_features)
         return batched_graph, targets, global_features
     else:
-        solute_graphs, targets = zip(*samples)
-        batched_graph = dgl.batch(solute_graphs)
+        graphs, targets = zip(*samples)
+        batched_graph = dgl.batch(graphs)
         targets = torch.stack(targets)
         return batched_graph, targets
 
