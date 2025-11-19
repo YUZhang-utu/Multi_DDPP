@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from torchmetrics import AUROC, MatthewsCorrCoef, Accuracy
 from Multi_DDPP.model import dmpnn
-from features.date import MoleculeDataset, collate_fn
+from features.data import MoleculeDataset, collate_fn
 
 
 def set_seed(seed: int = 42):
