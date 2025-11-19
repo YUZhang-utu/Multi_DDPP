@@ -15,10 +15,24 @@
   ##### * scikit-learn 1.3.2<br>
   ##### * dgl 2.2.1<br>
 # Installation
-##### * git clone https://github.com/YUZhang-utu/Macro_permeability<br>
-##### * cd Macro_permeability
-##### * conda env create -f environment.yml -n macro_p
+##### * Clone the current repo<br>
+```
+git clone https://github.com/YUZhang-utu/Macro_permeability
+```
+```
+cd Macro_permeability
+```
+##### * Create a new environment with all required packages<br>
+```
+conda env create -f environment.yml -n macro_p
+```
 # Predict new molecules
 ##### * Save data as same as files in Example
-##### * Classification: python Prediction/classification_predict.py --checkpoint_path classification_model.ckpt --input_csv new_data.csv
-##### * Regression: python Prediction/regression_predict.py --checkpoint_path regression_model.ckpt --input_csv new_data.csv
+##### * Classification prediction
+```
+python Prediction/classification_predict.py --checkpoint_path classification_model.ckpt --input_csv new_data.csv
+```
+##### * Regression prediction
+```
+python Prediction/regression_predict.py --checkpoint_path regression_model.ckpt --input_csv new_data.csv
+```
