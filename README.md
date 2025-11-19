@@ -1,5 +1,5 @@
 # Multi_DDPP
-#### <p style="text-align: justify;">In this work, we firstly trained a big dataset including differet cell assays but they represent similar task and diverse molecules. Then we transferred the knowledge from the big dataset into our specific-task and high-fidelity dataset, which comprehensively improve our model. And we constructed models with physiological parameters not just chemical information.</p>
+#### In this work, we firstly trained a big dataset including differet cell assays but they represent similar task and diverse molecules. Then we transferred the knowledge from the big dataset into our specific-task and high-fidelity dataset, which comprehensively improve our model. And we constructed models with physiological parameters not just chemical information.
 ![图片](https://github.com/user-attachments/assets/4c3a1859-a053-47d8-bfcb-71033336f58c)
 # Overview
 ##### * features : construction of molecular graph<br>
